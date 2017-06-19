@@ -50,3 +50,8 @@ class Object
     end
   end
 end
+
+if ENV["BUNDLER_SPEC_IGNORE_COMPATILITY_GUARD"]
+  $LOADED_FEATURES << File.expand_path("../../../bundler/compatibility_guard.rb", __FILE__)
+  $LOADED_FEATURES << "bundler/compatibility_guard.rb"
+end

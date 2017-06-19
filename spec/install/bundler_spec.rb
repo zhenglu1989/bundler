@@ -126,14 +126,14 @@ RSpec.describe "bundle install" do
     end
 
     it "can install dependencies with newer bundler version" do
-      install_gemfile <<-G
+      install_gemfile! <<-G
         source "file://#{gem_repo2}"
         gem "rails", "3.0"
       G
 
       simulate_bundler_version "99999999.99.1"
 
-      bundle "check"
+      bundle! "check", :env => { "BUNDLER_SPEC_IGNORE_COMPATILITY_GUARD" => "1" }
       expect(out).to include("The Gemfile's dependencies are satisfied")
     end
 
