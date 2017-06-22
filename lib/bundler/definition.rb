@@ -911,7 +911,7 @@ module Bundler
     end
 
     def requested_groups
-      groups - Bundler.settings.without - @optional_groups + Bundler.settings.with
+      groups - Bundler.settings[:without] - @optional_groups + Bundler.settings[:with]
     end
 
     def lockfiles_equal?(current, proposed, preserve_unknown_sections)

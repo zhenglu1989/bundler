@@ -12,11 +12,11 @@ module Bundler
     end
 
     def inject(gemfile_path, lockfile_path)
-      if Bundler.settings[:frozen]
+      if frozen = Bundler.settings[:frozen]
         # ensure the lock and Gemfile are synced
         Bundler.definition.ensure_equivalent_gemfile_and_lockfile(true)
         # temporarily remove frozen while we inject
-        frozen = Bundler.settings.delete(:frozen)
+        Bundler.settings.temporary(:frozen => false)
       end
 
       # evaluate the Gemfile we have now
@@ -43,7 +43,7 @@ module Bundler
       # return an array of the deps that we added
       return @new_deps
     ensure
-      Bundler.settings[:frozen] = "1" if frozen
+      Bundler.settings.temporary(:frozen => frozen)
     end
 
   private

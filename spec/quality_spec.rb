@@ -172,6 +172,7 @@ RSpec.describe "The library itself" do
       cache_command_is_package
       console_command
       default_cli_command
+      forget_cli_options
       gem.coc
       gem.mit
       inline
@@ -184,6 +185,7 @@ RSpec.describe "The library itself" do
 
     Bundler::Settings::BOOL_KEYS.each {|k| all_settings[k] << "in Bundler::Settings::BOOL_KEYS" }
     Bundler::Settings::NUMBER_KEYS.each {|k| all_settings[k] << "in Bundler::Settings::NUMBER_KEYS" }
+    Bundler::Settings::ARRAY_KEYS.each {|k| all_settings[k] << "in Bundler::Settings::ARRAY_KEYS" }
 
     Dir.chdir(root) do
       key_pattern = /([a-z\._-]+)/i
