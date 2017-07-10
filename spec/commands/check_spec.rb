@@ -124,7 +124,7 @@ RSpec.describe "bundle check" do
       gem "rack", :group => :foo
     G
 
-    bundle "install --without foo"
+    bundle :install, forgotten_command_line_options(:without => "foo")
 
     gemfile <<-G
       source "file://#{gem_repo1}"
@@ -239,7 +239,7 @@ RSpec.describe "bundle check" do
     expect(last_command).to be_failure
   end
 
-  context "--path" do
+  context "--path", :bundler => "< 2" do
     before do
       gemfile <<-G
         source "file://#{gem_repo1}"
@@ -251,8 +251,7 @@ RSpec.describe "bundle check" do
     end
 
     it "returns success" do
-      bundle "check --path vendor/bundle"
-      expect(exitstatus).to eq(0) if exitstatus
+      bundle! "check --path vendor/bundle"
       expect(out).to include("The Gemfile's dependencies are satisfied")
     end
 
