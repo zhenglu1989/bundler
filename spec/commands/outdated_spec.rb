@@ -407,7 +407,7 @@ RSpec.describe "bundle outdated" do
 
   context "after bundle install --deployment" do
     before do
-      install_gemfile <<-G, :deployment => true
+      install_gemfile <<-G, forgotten_command_line_options([:deployment, :frozen] => true)
         source "file://#{gem_repo2}"
 
         gem "rack"
@@ -419,7 +419,7 @@ RSpec.describe "bundle outdated" do
       update_repo2 { build_gem "activesupport", "3.0" }
 
       bundle "outdated"
-      expect(exitstatus).to_not be_zero if exitstatus
+      expect(last_command).to be_failure
       expect(out).to include("You are trying to check outdated gems in deployment mode.")
       expect(out).to include("Run `bundle outdated` elsewhere.")
       expect(out).to include("If this is a development machine, remove the ")

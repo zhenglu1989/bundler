@@ -199,12 +199,12 @@ RSpec.describe "bundle update" do
 
   describe "in a frozen bundle" do
     it "should fail loudly" do
-      bundle! "install --deployment"
+      bundle! "install", forgotten_command_line_options([:deployment, :frozen] => true)
       bundle "update", :all => bundle_update_requires_all?
 
+      expect(last_command).to be_failure
       expect(out).to match(/You are trying to install in deployment mode after changing.your Gemfile/m)
       expect(out).to match(/freeze \nby running `bundle install --no-deployment`./m)
-      expect(exitstatus).not_to eq(0) if exitstatus
     end
 
     it "should suggest different command when frozen is set globally" do

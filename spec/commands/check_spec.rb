@@ -92,7 +92,7 @@ RSpec.describe "bundle check" do
     expect(out).to include("Bundler can't satisfy your Gemfile's dependencies.")
   end
 
-  it "remembers --without option from install" do
+  it "remembers --without option from install", :bundler => "< 2" do
     gemfile <<-G
       source "file://#{gem_repo1}"
       group :foo do
@@ -100,9 +100,21 @@ RSpec.describe "bundle check" do
       end
     G
 
-    bundle "install --without foo"
-    bundle "check"
-    expect(exitstatus).to eq(0) if exitstatus
+    bundle! "install --without foo"
+    bundle! "check"
+    expect(out).to include("The Gemfile's dependencies are satisfied")
+  end
+
+  it "uses the without setting" do
+    bundle! "config without foo"
+    install_gemfile! <<-G
+      source "file://#{gem_repo1}"
+      group :foo do
+        gem "rack"
+      end
+    G
+
+    bundle! "check"
     expect(out).to include("The Gemfile's dependencies are satisfied")
   end
 
@@ -220,11 +232,11 @@ RSpec.describe "bundle check" do
     G
 
     bundle "install"
-    bundle "install --deployment"
+    bundle "install", forgotten_command_line_options([:deployment, :frozen] => true)
     FileUtils.rm(bundled_app("Gemfile.lock"))
 
     bundle :check
-    expect(exitstatus).not_to eq(0) if exitstatus
+    expect(last_command).to be_failure
   end
 
   context "--path" do
@@ -244,10 +256,9 @@ RSpec.describe "bundle check" do
       expect(out).to include("The Gemfile's dependencies are satisfied")
     end
 
-    it "should write to .bundle/config" do
+    it "should write to .bundle/config", :bundler => "< 2" do
       bundle "check --path vendor/bundle"
-      bundle "check"
-      expect(exitstatus).to eq(0) if exitstatus
+      bundle! "check"
     end
   end
 
